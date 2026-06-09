@@ -5,12 +5,13 @@ export type FetchResult<T> =
 export async function fetchWithTimeout<T>(
   url: string,
   timeoutMs: number,
+  headers?: Record<string, string>,
 ): Promise<FetchResult<T>> {
   const controller = new AbortController();
   const timerId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const res = await fetch(url, { signal: controller.signal });
+    const res = await fetch(url, { signal: controller.signal, headers });
     clearTimeout(timerId);
 
     if (res.status === 429) {
